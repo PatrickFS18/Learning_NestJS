@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
 import {
   Body,
@@ -9,6 +10,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
@@ -20,30 +22,50 @@ POST /users
 PATCH /users/:id
 DELETE /users/:id
 */
-
+  usersService = new UsersService();
+  constructor(private readonly userService: UsersService) {}
   @Get() //GET /users
   findAll(@Query('role') role?: 'INTERN' | 'ENGINEER' | 'ADMIN') {
-    return [role];
+    return this.usersService.findAll(role);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return { id };
+    return this.usersService.findOne(+id);
   }
+
   @Get('interns') //GET /users/interns
   findAllInterns() {
     return [];
   }
+
   @Post()
-  create(@Body() user: object) {
-    return user;
+  create(
+    @Body()
+    user: {
+      name: string;
+      email: string;
+      role: 'INTERN' | 'ENGINEER' | 'ADMIN';
+    },
+  ) {
+    return this.usersService.create(user);
   }
+
   @Patch(':id')
-  update(@Param('id') id: string, @Body() userUpdate: object) {
-    return { id, ...userUpdate };
+  update(
+    @Param('id') id: string,
+    @Body()
+    userUpdate: {
+      name?: string;
+      email?: string;
+      role?: 'INTERN' | 'ENGINEER' | 'ADMIN';
+    },
+  ) {
+    return this.usersService.update(+id, userUpdate);
   }
+
   @Delete(':id')
   delete(@Param('id') id: string) {
-    return { id };
+    return this.usersService.delete(+id);
   }
 }
