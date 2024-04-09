@@ -1,10 +1,19 @@
-import { Controller, Get, Param } from '@nestjs/common';
-import { get } from 'http';
+/* eslint-disable prettier/prettier */
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 
 @Controller('users')
 export class UsersController {
   /*
-CRUD!
+---CRUD---
 GET /users
 GET /users/:id
 POST /users
@@ -13,8 +22,8 @@ DELETE /users/:id
 */
 
   @Get() //GET /users
-  findAll() {
-    return [];
+  findAll(@Query('role') role?: 'INTERN' | 'ENGINEER' | 'ADMIN') {
+    return [role];
   }
 
   @Get(':id')
@@ -24,5 +33,17 @@ DELETE /users/:id
   @Get('interns') //GET /users/interns
   findAllInterns() {
     return [];
+  }
+  @Post()
+  create(@Body() user: object) {
+    return user;
+  }
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() userUpdate: object) {
+    return { id, ...userUpdate };
+  }
+  @Delete(':id')
+  delete(@Param('id') id: string) {
+    return { id };
   }
 }
